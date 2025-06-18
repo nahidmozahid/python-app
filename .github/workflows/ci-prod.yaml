@@ -33,7 +33,7 @@ jobs:
         git clone https://github.com/nahidmozahid/python-app-k8s-manifest.git
         cd python-app-k8s-manifest
         git checkout PROD
-        cd PROD
+        cd prod
         sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }}|g" deployment.yaml
         git add deployment.yaml
         git commit -m "Update Prod image to prod-${{ github.sha }}"
