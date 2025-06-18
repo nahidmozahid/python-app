@@ -37,7 +37,7 @@ jobs:
         cd python-app-k8s-manifest
 
         
-        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:UAT-${{ github.sha }}|g" UAT/deployment.yaml
-        git add UAT/deployment.yaml
+        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:UAT-${{ github.sha }}|g" uat/deployment.yaml
+        git add uat/deployment.yaml
         git commit -m "Update UAT image to UAT-${{ github.sha }}"
         git push https://nahidmozahid:${{ secrets.GH_ACCESS_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git UAT
