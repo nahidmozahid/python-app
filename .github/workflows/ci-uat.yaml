@@ -27,16 +27,24 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}
 
     - name: Update Kubernetes Manifest Repo for UAT
-      run: |
-        git config --global user.email "nahid.mozahid@gmail.com"
-        git config --global user.name "nahidmozahid"
-        git clone --no-single-branch https://github.com/nahidmozahid/python-app-k8s-manifest.git
-        cd python-app-k8s-manifest
-        git checkout origin/UAT -b UAT
-        cd UAT
+  run: |
+    git config --global user.email "nahid.mozahid@gmail.com"
+    git config --global user.name "nahidmozahid"
 
-        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}|g" deployment.yaml
-        git add deployment.yaml
-        git commit -m "Update UAT image to uat-${{ github.sha }}"
-        git push https://nahidmozahid:${{ secrets.GH_ACCESS_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git UAT
+    # Clone the repo fully (fetch all branches)
+    git clone --depth=1 --no-single-branch https://github.com/nahidmozahid/python-app-k8s-manifest.git
+    cd python-app-k8s-manifest
 
+    # Fetch all branches explicitly (just to be safe)
+    git fetch --all
+
+    # Checkout UAT branch directly
+    git checkout UAT
+
+    cd UAT
+
+    # Update manifest file
+    sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}|g" deployment.yaml
+    git add deployment.yaml
+    git commit -m "Update UAT image to uat-${{ github.sha }}"
+    git push https://nahidmozahid:${{ secrets.GH_ACCESS_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git UAT
