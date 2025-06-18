@@ -32,11 +32,11 @@ jobs:
         git config --global user.email "nahid.mozahid@gmail.com"
         git config --global user.name "nahidmozahid"
 
-        # Clone only the UAT branch
+        
         git clone --branch UAT --single-branch https://github.com/nahidmozahid/python-app-k8s-manifest.git
         cd python-app-k8s-manifest
 
-        # Update UAT manifest
+        
         sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}|g" UAT/deployment.yaml
         git add UAT/deployment.yaml
         git commit -m "Update UAT image to uat-${{ github.sha }}"
