@@ -31,7 +31,9 @@ jobs:
         git config --global user.email "nahid.mozahid@gmail.com"
         git config --global user.name "nahidmozahid"
         git clone https://github.com/nahidmozahid/python-app-k8s-manifest.git
-        cd python-app-k8s-manifest/uat
+        cd python-app-k8s-manifest
+        git checkout uat
+        cd uat
         sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}|g" deployment.yaml
         git add deployment.yaml
         git commit -m "Update UAT image to uat-${{ github.sha }}"
