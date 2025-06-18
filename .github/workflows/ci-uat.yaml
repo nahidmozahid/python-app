@@ -19,20 +19,20 @@ jobs:
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build and Push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/sample-python-app:uat-${{ github.sha }} .
-        docker push ${{ secrets.DOCKER_USERNAME }}/sample-python-app:uat-${{ github.sha }}
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }} .
+        docker push ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}
 
     - name: Update Kubernetes Manifest Repo for UAT
       run: |
-        git config --global user.email "you@example.com"
-        git config --global user.name "GitHub Actions"
-        git clone https://github.com/yourname/sample-python-app-manifests.git
-        cd sample-python-app-manifests/uat
-        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/sample-python-app:uat-${{ github.sha }}|g" deployment.yaml
+        git config --global user.email "nahid.mozahid@gmail.com"
+        git config --global user.name "nahidmozahid"
+        git clone https://github.com/nahidmozahid/python-app-k8s-manifest-.git
+        cd python-app-k8s-manifest-/uat
+        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}|g" deployment.yaml
         git add deployment.yaml
         git commit -m "Update UAT image to uat-${{ github.sha }}"
-        git push https://yourname:${{ secrets.GITHUB_TOKEN }}@github.com/yourname/sample-python-app-manifests.git uat
+        git push https://nahidmozahid:${{ secrets.GH_ACCESS_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest-.git uat
