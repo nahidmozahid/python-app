@@ -6,8 +6,9 @@ on:
       - UAT
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -21,7 +22,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Build and Push Docker image
+    - name: Build and Push Docker Image to DockerHub
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }} .
         docker push ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}
@@ -31,20 +32,12 @@ jobs:
         git config --global user.email "nahid.mozahid@gmail.com"
         git config --global user.name "nahidmozahid"
 
-        # Clone the repo fully (fetch all branches)
-        git clone --depth=1 --no-single-branch https://github.com/nahidmozahid/python-app-k8s-manifest.git
+        # Clone only the UAT branch
+        git clone --branch UAT --single-branch https://github.com/nahidmozahid/python-app-k8s-manifest.git
         cd python-app-k8s-manifest
 
-        # Fetch all branches explicitly (just to be safe)
-        git fetch --all
-
-        # Checkout UAT branch directly
-        git checkout UAT
-
-        cd UAT
-
-        # Update manifest file
-        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}|g" deployment.yaml
-        git add deployment.yaml
+        # Update UAT manifest
+        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:uat-${{ github.sha }}|g" UAT/deployment.yaml
+        git add UAT/deployment.yaml
         git commit -m "Update UAT image to uat-${{ github.sha }}"
         git push https://nahidmozahid:${{ secrets.GH_ACCESS_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git UAT
