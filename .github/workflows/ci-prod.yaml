@@ -31,7 +31,7 @@ jobs:
         git config --global user.email "nahid.mozahid@gmail.com"
         git config --global user.name "nahidmozahid"
         git clone https://github.com/nahidmozahid/python-app-k8s-manifest.git
-        cd python-app-k8s-manifest-/prod
+        cd python-app-k8s-manifest/prod
         sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }}|g" deployment.yaml
         git add deployment.yaml
         git commit -m "Update Prod image to prod-${{ github.sha }}"
