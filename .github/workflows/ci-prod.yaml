@@ -3,7 +3,7 @@ name: CI/CD to Production
 on:
   push:
     branches:
-      - prod
+      - PROD
 
 jobs:
   build-and-push:
@@ -32,9 +32,9 @@ jobs:
         git config --global user.name "nahidmozahid"
         git clone https://github.com/nahidmozahid/python-app-k8s-manifest.git
         cd python-app-k8s-manifest
-        git checkout prod
-        cd prod
+        git checkout PROD
+        cd PROD
         sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }}|g" deployment.yaml
         git add deployment.yaml
         git commit -m "Update Prod image to prod-${{ github.sha }}"
-        git push https://nahidmozahid:${{ secrets.GITHUB_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git prod
+        git push https://nahidmozahid:${{ secrets.GITHUB_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git PROD
