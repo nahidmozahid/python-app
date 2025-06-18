@@ -26,7 +26,7 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }} .
         docker push ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }}
 
-    - name: Update Kubernetes Manifest Repo for UAT
+    - name: Update Kubernetes Manifest Repo for PROD
       run: |
         git config --global user.email "nahid.mozahid@gmail.com"
         git config --global user.name "nahidmozahid"
@@ -36,7 +36,7 @@ jobs:
         cd python-app-k8s-manifest
 
         
-        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:UAT-${{ github.sha }}|g" prod/deployment.yaml
+        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:PROD-${{ github.sha }}|g" prod/deployment.yaml
         git add prod/deployment.yaml
-        git commit -m "Update UAT image to PROD-${{ github.sha }}"
+        git commit -m "Update PROD image to PROD-${{ github.sha }}"
         git push https://nahidmozahid:${{ secrets.GH_ACCESS_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git PROD
