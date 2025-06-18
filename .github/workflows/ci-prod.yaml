@@ -26,15 +26,17 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }} .
         docker push ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }}
 
-    - name: Update Kubernetes Manifest Repo for Prod
+    - name: Update Kubernetes Manifest Repo for PROD
       run: |
         git config --global user.email "nahid.mozahid@gmail.com"
         git config --global user.name "nahidmozahid"
-        git clone https://github.com/nahidmozahid/python-app-k8s-manifest.git
+
+        
+        git clone --branch PROD --single-branch https://github.com/nahidmozahid/python-app-k8s-manifest.git
         cd python-app-k8s-manifest
-        git checkout PROD
-        cd PROD
-        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:prod-${{ github.sha }}|g" deployment.yaml
-        git add deployment.yaml
-        git commit -m "Update Prod image to prod-${{ github.sha }}"
-        git push https://nahidmozahid:${{ secrets.GITHUB_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git PROD
+
+        
+        sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/python-app:PROD-${{ github.sha }}|g" prod/deployment.yaml
+        git add prod/deployment.yaml
+        git commit -m "Update PROD image to PROD-${{ github.sha }}"
+        git push https://nahidmozahid:${{ secrets.GH_ACCESS_TOKEN }}@github.com/nahidmozahid/python-app-k8s-manifest.git PROD
